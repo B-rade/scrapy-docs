@@ -2,17 +2,14 @@
 import scrapy
 
 
-class ExampleSpider(scrapy.Spider):
+class DocRootCrawler(scrapy.Spider):
     name = 'docs'
     allowed_domains = ['docs.microsoft.com']
     start_urls = ['https://docs.microsoft.com/en-us/']
 
     def parse(self, response):
         NEXT_PAGE_SELECTOR = '.directory-cols li>a::attr(href)'
-        next_page = (
-            f'{href}toc.json'
-            for href in response.css(NEXT_PAGE_SELECTOR).getall()
-        )
+        next_page = response.css(NEXT_PAGE_SELECTOR).getall()
         for page in next_page:
             yield scrapy.Request(
                 response.urljoin(page),
@@ -20,10 +17,26 @@ class ExampleSpider(scrapy.Spider):
             )
 
     def parse_toc(self, response):
-        if response.status == 404:
-            self.logger.error('fuck')
-        self.logger.error(response.url)
+        if response.url.endswith('index'):
+            url = response.url.rstrip('index')
+        else:
+            url = response.url
+        url += 'toc.json'
+        yield scrapy.Request(
+            url,
+            callback=self._parse_toc,
+        )
 
+    def _parse_toc(self, response):
+        if response.status == 404:
+            self.logger.warning(f'{response.status} {response.url}')
+        yield {
+            'status': response.status,
+            'url': response.url
+        }
+
+
+class TOCCrawler(scrapy.Spider):
     def parse_page(self, response):
         NEXT_PAGE_SELECTOR = 'a[data-linktype=absolute-path]::attr(href)'
         next_page = response.css(NEXT_PAGE_SELECTOR).getall()

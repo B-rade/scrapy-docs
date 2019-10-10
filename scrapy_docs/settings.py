@@ -22,7 +22,7 @@ USER_AGENT = 'scrapy_microsoft_docs (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
-FEED_URI = 'results.json'
+FEED_URI = 'results/results.json'
 FEED_FORMAT = 'json'
 #FEED_EXPORT_INDENT = 2
 
