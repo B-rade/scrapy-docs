@@ -15,7 +15,7 @@ SPIDER_MODULES = ['scrapy_docs.spiders']
 NEWSPIDER_MODULE = 'scrapy_docs.spiders'
 
 LOG_LEVEL = 'WARN'
-HTTPERROR_ALLOWED_CODES = [404,403]
+HTTPERROR_ALLOWED_CODES = [404, 403]
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = 'scrapy_microsoft_docs (+http://www.yourdomain.com)'
