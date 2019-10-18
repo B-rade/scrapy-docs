@@ -52,19 +52,34 @@ class DocCrawler(scrapy.Spider):
         }
     }
 
-    def __init__(self):
-        self.count = 0
+          # update progress bar by 1
+
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = super().from_crawler(crawler, *args, **kwargs)
+        crawler.signals.connect(spider.spider_opened, scrapy.signals.spider_opened)
+        crawler.signals.connect(spider.spider_closed, scrapy.signals.spider_closed)
+        return spider
+
+    def spider_opened(self, spider):
+        self.pbar = tqdm(total=self.count)  # initialize progress bar
+        self.pbar.clear()
+        self.pbar.write('Opening {} spider'.format(spider.name))
+
+    def spider_closed(self, spider):
+        self.pbar.clear()
+        self.pbar.write('Closing {} spider'.format(spider.name))
+        self.pbar.close()  # close progress bar
 
     def start_requests(self):
         self.count = self.get_count()
         urls = self._url_gen()
-        return tqdm(
-            (scrapy.Request(
+        return (
+            scrapy.Request(
                 url[1],
                 callback=self.parse_doc,
                 meta={'id': url[0]}
-            ) for url in urls),
-            total=self.count
+            ) for url in urls
         )
 
     def get_count(self):
@@ -99,3 +114,4 @@ class DocCrawler(scrapy.Spider):
             'visited_url': response.url,
             'id': response.meta['id'],
         }
+        self.pbar.update()
