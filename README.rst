@@ -33,6 +33,13 @@ scraped for images with
 
     scrapy crawl docs-toc
 
+This will give a file with the url of the docs page and the img source url 
+(no reason to download images if we don't need to). When I ran, I got about 30k image urls.
+
+The next stage of the problem to classify images as code snippets I'd probably resort to mechanical turk. It's
+the type of activity that could be easily offloaded to hundreds of people instead of trying to get clever and build
+an ML model. Could also try OCR and give an estimate of whether the text constitutes code.
+
 
 * Free software: MIT license
 * Documentation: https://scrapy-docs.readthedocs.io.
