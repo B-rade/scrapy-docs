@@ -16,6 +16,12 @@ Scrapy Docs
 
 Scrapes documentation sites for images that contain code snippets.
 
+Install into a virtual environment.
+
+.. code-block:: bash
+
+    pip install -e .
+
 Run by executing this code to generate all the urls for each docs page that will need scraping.
 Make sure to delete the file this generates after scraping. As it gets appended to for every
 crawl. // TODO make it overwrite.
