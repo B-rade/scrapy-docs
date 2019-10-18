@@ -12,7 +12,6 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    'Click>=7.0',
     'tqdm',
     'scrapy',
 ]
@@ -35,11 +34,6 @@ setup(
         'Programming Language :: Python :: 3.7',
     ],
     description="Scrapes documentation sites for images that contain code snippets.",
-    entry_points={
-        'console_scripts': [
-            'scrapy_docs=scrapy_docs.cli:main',
-        ],
-    },
     install_requires=requirements,
     license="MIT license",
     long_description=readme + '\n\n' + history,

@@ -14,11 +14,9 @@ Scrapy Docs
         :alt: Documentation Status
 
 
-
-
 Scrapes documentation sites for images that contain code snippets.
 
-Run by executing this code to generate the root urls for each docs page that will need scraping.
+Run by executing this code to generate all the urls for each docs page that will need scraping.
 Make sure to delete the file this generates after scraping. As it gets appended to for every
 crawl. // TODO make it overwrite.
 
@@ -26,18 +24,17 @@ crawl. // TODO make it overwrite.
 
     scrapy crawl docs-root
 
-This will give you the root url for the index to each subpage. Then each index page can be
-scraped for images with
+Then each page can be scraped with the following command.
 
 .. code-block:: bash
 
-    scrapy crawl docs-toc
+    scrapy crawl whats-up-docs
 
 This will give a file with the url of the docs page and the img source url 
-(no reason to download images if we don't need to). When I ran, I got about 30k image urls.
+(no reason to download the images if we don't need to).
 
 The next stage of the problem to classify images as code snippets I'd probably resort to mechanical turk. It's
-the type of activity that could be easily offloaded to hundreds of people instead of trying to get clever and build
+the type of activity that could be easily offloaded to hundreds of people instead of trying to build
 an ML model. Could also try OCR and give an estimate of whether the text constitutes code.
 
 

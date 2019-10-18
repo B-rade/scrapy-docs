@@ -36,12 +36,12 @@ class DocRootCrawler(scrapy.Spider):
 
 
 class DocCrawler(scrapy.Spider):
-    name = 'docs-docs'
+    name = 'whats-up-docs'
     allowed_domains = ['docs.microsoft.com']
 
     def start_requests(self):
         urls = self._url_gen()
-        urls = (x['url'] for x in urls)
+        next(urls)  # skip header line
         return (
             scrapy.Request(
                 url,

@@ -22,8 +22,8 @@ USER_AGENT = 'scrapy_microsoft_docs (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
-FEED_URI = 'results/%(name)s.json'
-FEED_FORMAT = 'json'
+FEED_URI = 'results/%(name)s.csv'
+FEED_FORMAT = 'csv'
 #FEED_EXPORT_INDENT = 2
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
