@@ -8,6 +8,10 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+from pathlib import Path
+
+
+DB = Path.cwd() / 'results' / 'db.sqlite'
 
 BOT_NAME = 'scrapy_docs'
 
@@ -22,8 +26,8 @@ USER_AGENT = 'scrapy_microsoft_docs (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
-FEED_URI = 'results/%(name)s.csv'
-FEED_FORMAT = 'csv'
+#FEED_URI = Path.cwd() / 'results' / '%(name)s.csv'
+#FEED_FORMAT = 'csv'
 #FEED_EXPORT_INDENT = 2
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import sqlite3
+
 import scrapy
 from tqdm import tqdm
 
@@ -7,6 +9,11 @@ class DocRootCrawler(scrapy.Spider):
     name = 'docs-root'
     allowed_domains = ['docs.microsoft.com']
     start_urls = ['https://docs.microsoft.com/_sitemaps/sitemapindex.xml']
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'scrapy_docs.pipelines.StoreUrlPipeline': 100,
+        }
+    }
 
     def parse(self, response):
         NEXT_PAGE_SELECTOR = '//loc/text()'
@@ -38,20 +45,55 @@ class DocRootCrawler(scrapy.Spider):
 class DocCrawler(scrapy.Spider):
     name = 'whats-up-docs'
     allowed_domains = ['docs.microsoft.com']
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'scrapy_docs.pipelines.StoreImagePipeline': 100,
+            'scrapy_docs.pipelines.VisitUrlPipeline': 200,
+        }
+    }
+
+    def __init__(self):
+        self.count = 0
 
     def start_requests(self):
+        self.count = self.get_count()
         urls = self._url_gen()
-        next(urls)  # skip header line
-        return (
-            scrapy.Request(
-                url,
-                callback=self.parse_doc
-            ) for url in urls
+        return tqdm(
+            (scrapy.Request(
+                url[1],
+                callback=self.parse_doc,
+                meta={'id': url[0]}
+            ) for url in urls),
+            total=self.count
         )
 
+    def get_count(self):
+        db = self.settings.get('DB')
+        con = sqlite3.connect(db)
+        with con:
+            c = con.cursor()
+            c.execute("SELECT COUNT(id) FROM urls WHERE visited = 0")
+            result = c.fetchone()[0]
+        con.close()
+        return result
+
     def _url_gen(self):
-        with open('results/docs-root.csv', 'r') as file:
-            yield from file
+        db = self.settings.get('DB')
+        con = sqlite3.connect(db)
+        with con:
+            c = con.cursor()
+            c.execute("SELECT id, url FROM urls WHERE visited = 0")
+            results = c.fetchall()
+        con.close()
+        return results
+
+    # def _cursor_gen(self, c):
+    #     while True:
+    #         results = c.fetchmany(1000)
+    #         if not results:
+    #             break
+    #         for result in results:
+    #             yield result
 
     def parse_doc(self, response):
         IMG_SELECTOR = 'img[data-linktype=relative-path]::attr(src)'
@@ -61,3 +103,7 @@ class DocCrawler(scrapy.Spider):
                 'url': response.url,
                 'img': response.urljoin(img),
             }
+        yield {
+            'visited_url': response.url,
+            'id': response.meta['id'],
+        }
