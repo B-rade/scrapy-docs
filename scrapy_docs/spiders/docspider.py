@@ -50,13 +50,13 @@ class DocCrawler(scrapy.Spider):
         )
 
     def _url_gen(self):
-        with open('results/docs-root.json', 'r') as file:
+        with open('results/docs-root.csv', 'r') as file:
             yield from file
 
     def parse_doc(self, response):
         IMG_SELECTOR = 'img[data-linktype=relative-path]::attr(src)'
         imgs = response.css(IMG_SELECTOR).getall()
-        for img in imgs:
+        for img in tqdm(imgs):  # give the illusion of progress
             yield {
                 'url': response.url,
                 'img': response.urljoin(img),
