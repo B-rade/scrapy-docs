@@ -18,6 +18,21 @@ Scrapy Docs
 
 Scrapes documentation sites for images that contain code snippets.
 
+Run by executing this code to generate the root urls for each docs page that will need scraping.
+Make sure to delete the file this generates after scraping. As it gets appended to for every
+crawl. // TODO make it overwrite.
+
+.. code-block:: bash
+
+    scrapy crawl docs-root
+
+This will give you the root url for the index to each subpage. Then each index page can be
+scraped for images with
+
+.. code-block:: bash
+
+    scrapy crawl docs-toc
+
 
 * Free software: MIT license
 * Documentation: https://scrapy-docs.readthedocs.io.
