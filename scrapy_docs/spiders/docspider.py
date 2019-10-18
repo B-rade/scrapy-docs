@@ -87,18 +87,10 @@ class DocCrawler(scrapy.Spider):
         con.close()
         return results
 
-    # def _cursor_gen(self, c):
-    #     while True:
-    #         results = c.fetchmany(1000)
-    #         if not results:
-    #             break
-    #         for result in results:
-    #             yield result
-
     def parse_doc(self, response):
         IMG_SELECTOR = 'img[data-linktype=relative-path]::attr(src)'
         imgs = response.css(IMG_SELECTOR).getall()
-        for img in tqdm(imgs):  # give the illusion of progress
+        for img in imgs:
             yield {
                 'url': response.url,
                 'img': response.urljoin(img),
